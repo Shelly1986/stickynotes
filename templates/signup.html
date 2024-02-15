@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            background: url('/static/background.jpg');
+            background-size: cover;
+            color: white;
+            text-align: center;
+        }
+
+        a:link{
+            color: green;
+        }
+        a:visited{
+            color: pink;
+        }
+
+        #fields{
+            width: 400px;
+            height: 150px;
+            text-align: left;
+            margin: auto;
+        }
+        .errors{
+            color: red;
+        }
+        ul{
+            list-style-type: none;
+            margin-left: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sign Up Form</h1>
+    <form action="signup" method = "POST">
+        <div id="fields" align="center">
+            {{ form.hidden_tag() }}
+            {{ form.email.label(style= "display: inline-block;width: 130px;") }} {{ form.email(size="30") }}
+            {% if form.email.errors %}
+            <ul class="errors">
+                {% for error in form.email.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <br>
+            <br>
+            {{ form.password.label(style= "display: inline-block;width: 130px;") }} {{ form.password(size="30") }}
+            {% if form.password.errors %}
+            <ul class="errors">
+                {% for error in form.password.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <br>
+            <br>
+            {{ form.confirm_password.label(style= "display: inline-block;width: 130px;") }} {{ form.confirm_password(size="30") }}
+            {% if form.confirm_password.errors %}
+            <ul class="errors">
+                {% for error in form.confirm_password.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            
+            <br>
+            <br>
+        </div>
+        <input type ="submit" />
+
+    </form>
+    </p>{{ message_signup }}</p>
+    <br>
+    <br>
+    <br>
+    <p><a href = '/'>Back to Login</a>
+    
+</body>
+</html>
