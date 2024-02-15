@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Barriecito&display=swap');
+body{
+    background: url('/static/background.jpg');
+    background-size: cover;
+    font-family: Barriecito;
+    color: white;
+    
+}
+
+#container{
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 15px;
+    column-gap: 15px;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+}
+
+#delete{
+    width: 50px;
+    height: 20px;
+    background-color: rgb(105, 105, 204);
+    color: white;
+    font-size: 12px;
+    position: absolute;
+}
+
+.saveButton{
+    width: 45px;
+    height: 20px;
+    background-color: blue;
+    color: white;
+    font-size: 12px;
+    margin-top: 180px;
+    position: absolute;
+}
+
+#heading{
+    display: flex;
+    flex-direction: row;
+    justify-items: space-between;
+}
+
+ul {
+    list-style-type: none;
+    margin-right: 20px;
+  }
+
+
+.note{
+    width: 200px;
+    height: 100px;
+    border: 1px solid #ccc;
+    margin: 0 10px 30px 10px;
+    padding: 5px;
+    overflow: auto;
+    box-sizing: border-box;
+    font-size: 12px;
+    font-family: Barriecito;
+    
+}
+
+.note-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    
+}
+
+.red{
+    background-color: rgb(232, 92, 92);
+    color: white;
+}
+
+.yellow{
+    background-color: rgb(240, 240, 109);
+    color: black;
+}
+
+.green{
+    color: black;
+    background-color: rgb(138, 243, 138);
+}
+
+.navigation{
+    width: 100vw;
+    height: 30px;
+    background-color: chocolate;
+    text-align: center;
+    margin-bottom: 8px;
+  
+}
