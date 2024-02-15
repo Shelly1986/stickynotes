@@ -124,4 +124,3 @@ def deletesticky(note_id):
     connection.close()
     return flask.render_template('sticky.html',email=email,notes=notes)
     
-app.run(host="0.0.0.0", port = 8080, debug=True)
