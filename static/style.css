@@ -1,8 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Barriecito&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Satisfy&display=swap');
 body{
     background: url('/static/background.jpg');
     background-size: cover;
-    font-family: Barriecito;
+    font-family: Satisfy;
     color: white;
     font-size: 20px;
     
@@ -59,7 +59,7 @@ ul {
     overflow: auto;
     box-sizing: border-box;
     font-size: 20px;
-    font-family: Barriecito;
+    font-family: Satisfy;
     
 }
 
@@ -71,6 +71,7 @@ ul {
     margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
+    font-family: Satisfy;
     
 }
 
