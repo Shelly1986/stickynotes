@@ -4,7 +4,8 @@ body{
     background-size: cover;
     font-family: Barriecito;
     color: white;
-    font-size: 15px;
+    font-size: 20px;
+    
     
 }
 
@@ -57,7 +58,7 @@ ul {
     padding: 5px;
     overflow: auto;
     box-sizing: border-box;
-    font-size: 14px;
+    font-size: 20px;
     font-family: Barriecito;
     
 }
