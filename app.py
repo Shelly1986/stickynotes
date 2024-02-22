@@ -97,7 +97,7 @@ def addsticky():
     notetext = flask.request.values.get('notetext')
     notecolor = flask.request.values.get('notecolor')
     if notetext == '':
-        flash("Please enter some text to your sticky note")
+        flash("Please enter some text on your sticky note")
     else:
         connection = sqlite3.connect('login.db')
         with connection:
