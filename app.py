@@ -103,6 +103,7 @@ def addsticky():
         with connection:
             cursor = connection.cursor()
             cursor.execute("INSERT INTO sticky (email, note_text,note_color) VALUES(?,?,?)", [ email,notetext,notecolor ])
+            connection.commit()
         connection.close()
     return flask.redirect("/showsticky")
 
