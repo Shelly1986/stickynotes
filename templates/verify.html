@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            background: url('/static/background.jpg');
+            background-size: cover;
+            color: white;
+            text-align: center;
+        }
+
+        a:link{
+            color: green;
+        }
+        a:visited{
+            color: pink;
+        }
+
+        #fields{
+            width: 400px;
+            height: 150px;
+            text-align: left;
+            margin: auto;
+        }
+        .errors{
+            color: red;
+        }
+        ul{
+            list-style-type: none;
+            margin-left: 100px;
+        }
+    </style>
+</head>
+<body>
+    <center><h2>Enter the OTP received on your email</h2></center>
+    <form action = "{{ url_for('verify') }}" method="POST">
+    {{ form.hidden_tag() }}
+    {{ form.otp.label(style= "display: inline-block;width: 100px;") }} {{ form.otp(size="30") }}
+    {% if form.otp.errors %}
+    <ul class="errors">
+        {% for error in form.otp.errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <br>
+    <br>
+    
+        <button type ="submit">Submit</button>
+    </form>
+    
+
+</body>

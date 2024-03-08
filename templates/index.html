@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digi Notes</title>
+    <title>Document</title>
     <style>
         h1{
             color: white;
-            font-size: 80px;
+            font-size: 50px;
 
         }
         .form-container{
@@ -23,7 +23,6 @@
             color: white;
             background-size: cover;
             text-align: center;
-            font-size: 15px;
         }
         
         a:visited{
@@ -69,11 +68,17 @@
             {% endif %}
             <br>
             <br>
-            <button type="submit" id="login">Login</button>
+            <center>
+                <button type="submit" id="login">Login</button>
+                <br>
+                <br>
+                <a href='/forgot'>Forgot Password</a>
+            </center>
             <br>
         </form>
         
     </div>
+    <p>{{ message_signup }}</p>
     <p>{{ message }}</p>
     <p align="center">Don't have an account?</p>
     <a href = "/register"><center>Sign Up Here</center></a>

@@ -36,7 +36,7 @@
 </head>
 <body>
     <h1>Sign Up Form</h1>
-    <form action="signup" method = "POST">
+    <form action="{{ url_for('signup') }}" method = "POST">
         <div id="fields" align="center">
             {{ form.hidden_tag() }}
             {{ form.email.label(style= "display: inline-block;width: 130px;") }} {{ form.email(size="30") }}
