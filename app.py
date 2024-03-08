@@ -3,12 +3,8 @@ import sqlite3
 import pyotp
 from flask import Flask, redirect, url_for, flash, session
 from flask_mail import Mail,Message
-from forms import RegistrationForm, LoginForm, ForgotForm,VerifyForm
-
-
+from forms import RegistrationForm, LoginForm, ForgotForm,VerifyForm,ForgotOtp,ResetForm
 app = Flask('__name__')
-
-
 app.config['SECRET_KEY'] = '5b5517e6013e2c3b1b1745f65a646ec1'
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
@@ -29,8 +25,14 @@ def initialise_db():
 initialise_db()
 
 def send_otp_email(email, otp):
-    subject = 'Digi Notes App - Email Verification OTP'
-    body = f'Your OTP for email verification is: {otp}'
+    subject = 'Email Verification OTP'
+    body = f'Your OTP for email verification is: {otp}.The OTP is valid for 10 minutes.'
+    msg = Message(subject, recipients=[email], body=body)
+    mail.send(msg)
+
+def reset_password_send(email, otp):
+    subject = 'OTP for Password Reset'
+    body = f'Your OTP for resetting your password is: {otp}.The OTP is valid for 10 minutes.'
     msg = Message(subject, recipients=[email], body=body)
     mail.send(msg)
     
@@ -84,7 +86,7 @@ def signup():
         result=cursor.execute("SELECT email from users where email=?",(email,))
         fetched_result = result.fetchone()
         if fetched_result is None:
-            totp = pyotp.TOTP(pyotp.random_base32())
+            totp = pyotp.TOTP(pyotp.random_base32(),interval=600)
             otp = totp.now()
             send_otp_email(email, otp)
             session['otp'] = otp
@@ -166,19 +168,68 @@ def forgot():
     form = ForgotForm()
     return flask.render_template('forgot.html',form=form) 
 
-@app.route('/forgot_password',methods=['POST'])
+@app.route('/forgot_password',methods=['GET','POST'])
 def forgot_password():
     form = ForgotForm()
+    message = ''
     if flask.request.method == 'POST':
-        if form.validate_on_submit():
-            email = flask.request.values.get('email')
-            new_password = flask.request.values.get('new_password')
+        
+        if form.validate():
+            
+            email = form.email.data
+            print(email)
             connection = sqlite3.connect('login.db')
             cursor = connection.cursor()
-            result=cursor.execute("SELECT email from users where email=?",(email,))
+            cursor.execute("SELECT email from users where email=?",(email,))
+            result = cursor.fetchone()
+            print(result)
             if result is None:
-                message_forgot = "This email does not exist in our records"
+                message = "This user does not exist in our database"
+                return flask.render_template('forgot.html',form=form,message=message)
             else:
-                cursor.execute("UPDATE users SET password = new_password WHERE email=?",(email,))
-                connection.commit()
-                connection.close()
+                totp = pyotp.TOTP(pyotp.random_base32(),interval=600)
+                otp = totp.now()
+                reset_password_send(email, otp)
+                session['otp'] = otp
+                message = "We've sent you an OTP on your email address which is valid for the next 10 minutes"   
+                return flask.render_template('forgot_otp.html',form=ForgotOtp(),message=message)
+        else:
+            return flask.render_template('forgot.html',form=form,message=message)
+    else:
+        return flask.render_template('forgot.html',form=form,message=message)
+
+@app.route('/for_otp',methods=['GET','POST'])
+def for_otp():
+    form = ForgotOtp()
+    message=''
+    user_otp = form.otp.data
+    if user_otp == flask.session.get('otp'):
+        return flask.redirect('/reset_password')
+    else:
+        message = "The OTP is not correct"
+        return flask.render_template('forgot.html',message=message,form=ForgotForm())
+    
+@app.route('/reset_password',methods=['GET','POST'])
+def reset_password():
+    form = ResetForm()
+    return flask.render_template('reset.html',form=form)
+
+@app.route('/reset',methods = ['GET','POST'])
+def reset():
+    form = ResetForm()
+    new_password = form.new_password.data
+    message_reset=''
+    if flask.request.method == 'POST' and form.validate_on_submit():
+        print("validated")
+        email = flask.session.get('email')
+        connection = sqlite3.connect('login.db')
+        cursor = connection.cursor()
+        cursor.execute("UPDATE users SET password = ? WHERE email=?",(new_password,email))
+        connection.commit()
+        message_reset="Your password has been reset. Please login with the new password"
+        return flask.render_template('index.html',message_reset=message_reset,form=LoginForm())
+    else:
+        return flask.render_template('reset.html',form=form)
+    
+    
+app.run(host="0.0.0.0", port = 8080, debug=True)

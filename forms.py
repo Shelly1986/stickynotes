@@ -21,3 +21,11 @@ class ForgotForm(FlaskForm):
 
 class VerifyForm(FlaskForm):
     otp = StringField('One Time Password',validators=[DataRequired()])
+
+class ForgotOtp(FlaskForm):
+    otp = StringField('One Time Password',validators=[DataRequired()])
+
+class ResetForm(FlaskForm):
+    new_password = PasswordField('New Password',validators=[DataRequired(),Length(min=6,max=35)])
+    confirm_password = PasswordField('Confirm Password',validators=[DataRequired(),EqualTo('new_password')])
+    submit = SubmitField('Reset')
