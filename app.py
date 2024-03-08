@@ -29,7 +29,7 @@ def initialise_db():
 initialise_db()
 
 def send_otp_email(email, otp):
-    subject = 'Email Verification OTP'
+    subject = 'Digi Notes App - Email Verification OTP'
     body = f'Your OTP for email verification is: {otp}'
     msg = Message(subject, recipients=[email], body=body)
     mail.send(msg)
