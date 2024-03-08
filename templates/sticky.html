@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Sticky Notes</title>
     <link rel="stylesheet" href="\static\style.css">
-    
-    
 </head>
 <body>
     {% with messages = get_flashed_messages() %}
@@ -16,8 +14,8 @@
      <center><li>{{ message }}</li></center>
     {% endfor %}
     </ul>
-  {% endif %}
-{% endwith %}
+    {% endif %}
+    {% endwith %}
     <form action="{{ url_for('login') }}" method="POST">
     <div class = "navigation">
         <ul>
@@ -25,8 +23,7 @@
         </ul>
         <h3><center>Welcome <u>{{ email }}</center></u></h3>
     </div>
-    </form>
-    
+    </form> 
     <br>
     <form action="{{ url_for('addsticky') }}" method = "POST">
     <div id="container">
@@ -40,7 +37,7 @@
 
         <button id= "add"> Add New </button>
     </form>
-</div>
+    </div>
     <div class = "note-container">
             {% for note in notes %}
                 <div class="note {{ note[3] }}">
@@ -50,7 +47,6 @@
                     </form>
                     <br>
                     <br>
-                    
                     {{ note[2] }}
                 </div>
             {% endfor %}  

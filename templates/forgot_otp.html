@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digi Notes Verify</title>
+    <title>OTP verification</title>
     <style>
         body{
             background: url('/static/background.jpg');
@@ -36,7 +36,7 @@
 </head>
 <body>
     <center><h2>Enter the OTP received on your email</h2></center>
-    <form action = "{{ url_for('verify') }}" method="POST">
+    <form action = "{{ url_for('for_otp') }}" method="POST">
     {{ form.hidden_tag() }}
     {{ form.otp.label(style= "display: inline-block;width: 100px;") }} {{ form.otp(size="30") }}
     {% if form.otp.errors %}

@@ -5,6 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot Password</title>
     <link rel="stylesheet" href="\static\style.css">
-    
-    
 </head>
+<body>
+    <br>
+    <br>
+    <form action = "{{ url_for('forgot_password') }}" method="POST">
+        {{ form.hidden_tag() }}
+        <div id="password-reset">
+            <h3><center>Enter your email id to receive a one time password: </center></h3>
+            <center>{{ form.email(size="40") }}</center>
+            <center><button type="submit" id="reset">Send OTP</button></center>
+        </div>
+        {% if form.email.errors %}
+            <ul class="errors">
+                {% for error in form.email.errors %}
+                    <center><li>{{ error }}</li></center>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        
+    </form>
+    <p><center>{{ message }}</center></p>
+</body>
