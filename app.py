@@ -26,13 +26,13 @@ initialise_db()
 
 def send_otp_email(email, otp):
     subject = 'Email Verification OTP'
-    body = f'Your OTP for email verification is: {otp}.The OTP is valid for 10 minutes.'
+    body = f'Your OTP for email verification is: {otp}. The OTP is valid for 10 minutes.'
     msg = Message(subject, recipients=[email], body=body)
     mail.send(msg)
 
 def reset_password_send(email, otp):
     subject = 'OTP for Password Reset'
-    body = f'Your OTP for resetting your password is: {otp}.The OTP is valid for 10 minutes.'
+    body = f'Your OTP for resetting your password is: {otp}. The OTP is valid for 10 minutes.'
     msg = Message(subject, recipients=[email], body=body)
     mail.send(msg)
     
