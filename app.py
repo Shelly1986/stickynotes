@@ -182,4 +182,3 @@ def forgot_password():
                 cursor.execute("UPDATE users SET password = new_password WHERE email=?",(email,))
                 connection.commit()
                 connection.close()
-app.run(host="0.0.0.0", port = 8080, debug=True)
