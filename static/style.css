@@ -1,11 +1,9 @@
-@import url('https://fonts.googleapis.com/css?family=Satisfy&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
 body{
     background: url('/static/background.jpg');
     background-size: cover;
-    font-family: Satisfy;
+    font-family: Roboto Mono;
     color: white;
-    font-size: 20px;
-    
     
 }
 
@@ -51,15 +49,15 @@ ul {
 
 
 .note{
-    width: 300px;
-    height: 200px;
+    width: 200px;
+    height: 100px;
     border: 1px solid #ccc;
     margin: 0 10px 30px 10px;
     padding: 5px;
     overflow: auto;
     box-sizing: border-box;
-    font-size: 20px;
-    font-family: Satisfy;
+    font-size: 12px;
+    
     
 }
 
@@ -71,30 +69,46 @@ ul {
     margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
-    font-family: Satisfy;
+    font-family: Satisy;
     
 }
 
 .red{
     background-color: rgb(232, 92, 92);
     color: white;
+    font-family: Roboto Mono;
 }
 
 .yellow{
     background-color: rgb(240, 240, 109);
     color: black;
+    font-family: Roboto Mono;
 }
 
 .green{
     color: black;
     background-color: rgb(138, 243, 138);
+    font-family: Roboto Mono;
 }
 
 .navigation{
     width: 100vw;
     height: 30px;
-    background-color: chocolate;
+    background-color: rgb(239, 139, 68);
     text-align: center;
     margin-bottom: 8px;
   
+}
+
+#password-reset{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+}
+
+#reset{
+    width: 100px;
+    height: 20px;
 }
