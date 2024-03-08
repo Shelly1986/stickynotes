@@ -232,4 +232,3 @@ def reset():
         return flask.render_template('reset.html',form=form)
     
     
-app.run(host="0.0.0.0", port = 8080, debug=True)
