@@ -14,6 +14,7 @@
         <div id="password-reset">
             <h3><center>Enter your email id to receive a one time password: </center></h3>
             <center>{{ form.email(size="40") }}</center>
+            <br>
             <center><button type="submit" id="reset">Send OTP</button></center>
         </div>
         {% if form.email.errors %}
