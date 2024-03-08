@@ -1,13 +1,23 @@
 import flask
 import sqlite3
+import pyotp
 from flask import Flask, redirect, url_for, flash, session
-
-
-from forms import RegistrationForm, LoginForm
+from flask_mail import Mail,Message
+from forms import RegistrationForm, LoginForm, ForgotForm,VerifyForm
 
 
 app = Flask('__name__')
+
+
 app.config['SECRET_KEY'] = '5b5517e6013e2c3b1b1745f65a646ec1'
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_USERNAME'] = 'computersciencecis@gmail.com'
+app.config['MAIL_PASSWORD'] = 'kqja ound rjsw nehg'
+app.config['MAIL_DEFAULT_SENDER'] = 'computersciencecis@gmailcom'
+mail = Mail(app)
 
 def initialise_db():
     connection = sqlite3.connect('login.db')
@@ -18,6 +28,12 @@ def initialise_db():
 
 initialise_db()
 
+def send_otp_email(email, otp):
+    subject = 'Email Verification OTP'
+    body = f'Your OTP for email verification is: {otp}'
+    msg = Message(subject, recipients=[email], body=body)
+    mail.send(msg)
+    
 @app.route('/')
 def home():
     form = LoginForm()
@@ -26,7 +42,6 @@ def home():
 @app.route('/login',methods = ['POST'])
 def login():
     form = LoginForm()
-    
     if flask.request.method == 'POST' and form.validate():
         email = form.email.data
         password = form.password.data
@@ -42,51 +57,75 @@ def login():
             email = cursor.fetchone()
             cursor.execute("SELECT * from sticky WHERE email=?",(email[0],))
             notes = cursor.fetchall()
-            return flask.render_template('sticky.html',email=email,notes=notes)
+            return flask.render_template('sticky.html',email=form.email.data,notes=notes)
         else:
             message = "Login Failed"
-        
     else:
-        message = 'Login Failed'
-    connection.close()
+        message=""
+    
     return flask.render_template('index.html', form=form, message = message)
 
     
-@app.route('/register')
+@app.route('/register',methods=['GET','POST'])
 def register():
     form = RegistrationForm()
     return flask.render_template('signup.html', title ='register', form=form)
 
-@app.route('/signup',methods=['POST'])
+@app.route('/signup',methods=['GET','POST'])
 def signup():
     form = RegistrationForm()
-    if flask.request.method == 'POST':
-       
-        if form.validate_on_submit():
-            email = form.email.data
-            password = form.password.data
-            connection = sqlite3.connect('login.db')
-            cursor = connection.cursor()
-            result=cursor.execute("SELECT email from users where email=?",(email,))
-            fetched_result = result.fetchone()
-            if fetched_result is None:
-                cursor.execute("INSERT INTO users(email,password) VALUES(?,?)",[ email, password ])
-                connection.commit()
-                message_signup = "Sign up successful"
-                
-            else:
-                message_signup = "This email already exists. Try again!"
+    if flask.request.method == 'POST' and form.validate():
+        email = form.email.data
+        session['email'] = email
+        password = form.password.data
+        session['password'] = password
+        connection = sqlite3.connect('login.db')
+        cursor = connection.cursor()
+        result=cursor.execute("SELECT email from users where email=?",(email,))
+        fetched_result = result.fetchone()
+        if fetched_result is None:
+            totp = pyotp.TOTP(pyotp.random_base32())
+            otp = totp.now()
+            send_otp_email(email, otp)
+            session['otp'] = otp
+            return flask.redirect('/verify')
+        else:
+            message_signup = "This email already exists. Try again!"
             return flask.render_template('signup.html',message_signup=message_signup,form=form)
-    connection.close()
+            
     return flask.render_template('signup.html',form=form)
 
+@app.route('/verify',methods=['GET','POST'])
+def verify():
+    form = VerifyForm()
+    email = flask.session.get('email')
+    password = flask.session.get('password')
+    user_otp = form.otp.data
+    system_otp = flask.session.get('otp')
+    if flask.request.method == 'POST' and form.validate_on_submit():
+        email = flask.session.get('email')
+        password = flask.session.get('password')
+        user_otp = form.otp.data
+        if user_otp == system_otp:
+            connection = sqlite3.connect('login.db')
+            cursor = connection.cursor()
+            cursor.execute("INSERT INTO users(email,password) VALUES(?,?)",[ email, password ])
+            connection.commit()
+            message_signup = "Sign up successful. Please login"
+            session.pop('otp')
+            return flask.render_template('index.html',message_signup=message_signup,form=LoginForm())
+        else:
+            message_signup = "The OTP is not correct"
+            return flask.render_template('signup.html',message_signup=message_signup,form=RegistrationForm())
+    else:
+        return flask.render_template('verify.html',form=form)
 
 @app.route('/showsticky',methods=['GET'])
 def showsticky():
     email= flask.session.get('email')
     connection = sqlite3.connect('login.db')
     cursor = connection.cursor()
-    cursor.execute("SELECT * from sticky WHERE email=?",[email])
+    cursor.execute("SELECT * from sticky WHERE email=?",(email,))
     notes = cursor.fetchall()
     connection.close()
     return flask.render_template('sticky.html',email=email,notes=notes)
@@ -97,14 +136,13 @@ def addsticky():
     notetext = flask.request.values.get('notetext')
     notecolor = flask.request.values.get('notecolor')
     if notetext == '':
-        flash("Please enter some text on your sticky note")
+        flash("Please enter some text to your sticky note")
     else:
         connection = sqlite3.connect('login.db')
         with connection:
             cursor = connection.cursor()
             cursor.execute("INSERT INTO sticky (email, note_text,note_color) VALUES(?,?,?)", [ email,notetext,notecolor ])
-            connection.commit()
-        connection.close()
+        
     return flask.redirect("/showsticky")
 
 
@@ -112,7 +150,6 @@ def addsticky():
 def deletesticky(note_id):
     email = flask.session.get('email')
     note_id = flask.request.values.get('note_id')
-    print(note_id)
     connection = sqlite3.connect('login.db')
     cursor = connection.cursor()
     cursor.execute("DELETE from sticky where id=?",(note_id,))
@@ -121,7 +158,28 @@ def deletesticky(note_id):
     email = cursor.fetchone()
     cursor.execute("SELECT * from sticky WHERE email=?",(email[0],))
     notes = cursor.fetchall()
-    print(notes)
     connection.close()
-    return flask.render_template('sticky.html',email=email,notes=notes)
-    
+    return flask.render_template('sticky.html',email=flask.session.get('email'),notes=notes)
+
+@app.route('/forgot',methods=['GET','POST'])
+def forgot():
+    form = ForgotForm()
+    return flask.render_template('forgot.html',form=form) 
+
+@app.route('/forgot_password',methods=['POST'])
+def forgot_password():
+    form = ForgotForm()
+    if flask.request.method == 'POST':
+        if form.validate_on_submit():
+            email = flask.request.values.get('email')
+            new_password = flask.request.values.get('new_password')
+            connection = sqlite3.connect('login.db')
+            cursor = connection.cursor()
+            result=cursor.execute("SELECT email from users where email=?",(email,))
+            if result is None:
+                message_forgot = "This email does not exist in our records"
+            else:
+                cursor.execute("UPDATE users SET password = new_password WHERE email=?",(email,))
+                connection.commit()
+                connection.close()
+app.run(host="0.0.0.0", port = 8080, debug=True)
